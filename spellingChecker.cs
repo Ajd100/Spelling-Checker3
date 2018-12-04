@@ -23,6 +23,7 @@ namespace spellingChecker {
       string userFile = File.ReadAllText(".\\testFile.txt");
 
       userFile = CleanInput(userFile);
+  //    Console.Write(userFile +"\n\n");
 //      Console.Write(userFile);
       //Cleaning the userFile
   /*    var sb = new StringBuilder();
@@ -47,7 +48,7 @@ namespace spellingChecker {
       //  Console.Write(userInput);
 
         foreach (string s in userInput) {
-          Console.WriteLine(s);
+  //        Console.Write(s);
         }
 
       foreach (string w in dictionary) {
@@ -65,6 +66,7 @@ namespace spellingChecker {
       foreach (string w in userInput) {
         if(!userHash.ContainsKey(w)){
           userHash.Add(w, w.GetHashCode());
+          Console.WriteLine(w);
         }
       }
 
@@ -75,7 +77,10 @@ namespace spellingChecker {
     //  foreach (DictionaryEntry i in dictHash){
       foreach (DictionaryEntry j in userHash) {
         if (!dictHash.ContainsValue((int) j.Value)) {
-          badWords.Add((String) j.Key);
+          if (((String) (j.Key)).Length > 1) {
+            badWords.Add(((String) (j.Key)).Trim());
+          }
+        //  Console.WriteLine((String) j.Key);
         }
       }
 
@@ -94,11 +99,9 @@ namespace spellingChecker {
       }
 
       static string CleanInput(string strIn) {
-
         try {
 //          return Regex.Replace(strIn, @"[^\w\.@-]", "",
           return Regex.Replace(strIn, @"[\p{P}]", "",
-
                                RegexOptions.None, TimeSpan.FromSeconds(1.5));
        }
        // If we timeout when replacing invalid characters,
