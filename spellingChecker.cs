@@ -19,100 +19,47 @@ namespace spellingChecker {
       List<String> badWords = new List<String>();
 
       /* WOO LETS DO THIS! */
-      string [] dictionary = File.ReadAllLines(".\\dict2.txt");
-      string userFile = File.ReadAllText(".\\testFile.txt");
+      //Dictionary stuff...
+      string dictionary = File.ReadAllText(".\\dictionary.txt");
+      String [] dicFile = dictionary.Split(' ');
+      List<String> wordList = dicFile.ToList();
 
+      //User File stuff...
+      string userFile = File.ReadAllText(".\\file1.txt");
       userFile = CleanInput(userFile);
-  //    Console.Write(userFile +"\n\n");
-//      Console.Write(userFile);
-      //Cleaning the userFile
-  /*    var sb = new StringBuilder();
-        foreach (char c in userFile)  {
-          if (!char.IsPunctuation(c))
-            sb.Append(char.ToLower(c));
+      userFile = userFile.ToLower();
+      String [] userInput = userFile.Split(' ');
+      List<String> userList = userInput.ToList();
+
+      //Sending the dictionary stuffs to the hashtable
+      for (int i = 0; i < wordList.Count; ++i) {
+        dictHash.Add(wordList[i].ToLower(), wordList[i].ToLower().GetHashCode());
+      }
+
+      //Checking the input against the hashtable.
+      for (int j = 0; j < userList.Count; ++j) {
+        var hash = userList[j].ToLower().GetHashCode();
+        if (!dictHash.ContainsValue(hash)) {
+          if (!badWords.Contains(userList[j]) && userList[j] != "") {
+            badWords.Add(userList[j]);
           }
-        userFile = sb.ToString();
-        userFile.Replace(Environment.NewLine, ""); */
-      //  Console.WriteLine(userFile + '\n');
-        foreach (char c in userFile) {
-
-        }
-
-        userFile = userFile.ToLower();
-        String [] userInput = userFile.Split(' ');
-
-      //  String [] userFile1 = userFile.Split('\n');
-      //  String userInpu1 = userFile.ToString();
-        //Console.Write(userFile1);
-        //String [] userInput = userInpu1.Split(' ');
-      //  Console.Write(userInput);
-
-        foreach (string s in userInput) {
-  //        Console.Write(s);
-        }
-
-      foreach (string w in dictionary) {
-        if(!dictHash.ContainsKey(w)){
-          dictHash.Add(w, w.GetHashCode());
-        }//Console.Write("\t" + w);
-      }
-
-    //  Console.Write(userFile);
-
-    /*  foreach (string w in userInput) {
-        Console.WriteLine(w);
-      }*/
-
-      foreach (string w in userInput) {
-        if(!userHash.ContainsKey(w)){
-          userHash.Add(w, w.GetHashCode());
-          Console.WriteLine(w);
         }
       }
 
-      foreach (DictionaryEntry j in dictHash) {
-      //  Console.Write(j.Key + ", " + j.Value);
-        }
-
-    //  foreach (DictionaryEntry i in dictHash){
-      foreach (DictionaryEntry j in userHash) {
-        if (!dictHash.ContainsValue((int) j.Value)) {
-          if (((String) (j.Key)).Length > 1) {
-            badWords.Add(((String) (j.Key)).Trim());
-          }
-        //  Console.WriteLine((String) j.Key);
-        }
-      }
-
-  /*      foreach (DictionaryEntry j in userHash) {
-          //if (!dictHash.ContainsValue((int) j.Value)) {
-            Console.Write(j.Key + ", " + j.Value);
-          }*/
-        //  }
-
-
+      //Iterating through the bad list and printing the misspelled words
       foreach (String i in badWords){
         Console.WriteLine(i + " is misspelled");
       }
-      //  }
-        //Console.Write((int) i.Value + ",");
-      }
+    }
 
+      //Cleaning the text by removing all bad input
       static string CleanInput(string strIn) {
-        try {
-//          return Regex.Replace(strIn, @"[^\w\.@-]", "",
-          return Regex.Replace(strIn, @"[\p{P}]", "",
-                               RegexOptions.None, TimeSpan.FromSeconds(1.5));
-       }
-       // If we timeout when replacing invalid characters,
-       // we should return Empty.
-       catch (RegexMatchTimeoutException) {
-          return String.Empty;
-       }
+        strIn = Regex.Replace(strIn, @"\p{P}" , " ");
+        strIn = Regex.Replace(strIn, @"\W", " ");
+        strIn = Regex.Replace(strIn, @"^\s+", " ");
+        strIn = Regex.Replace(strIn, @"\d", " ");
+
+        return strIn;
       }
-
-
-//      TextBox txt = new TextBox();
-
     }
   }
